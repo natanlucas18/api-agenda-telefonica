@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import globalConfig from './global.config';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -25,9 +24,10 @@ import globalConfig from './global.config';
           synchronize: globalConfigurations.database.synchronize,
         }
       }
-    })
+    }),
+    UsersModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
