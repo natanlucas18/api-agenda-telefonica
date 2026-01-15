@@ -3,7 +3,7 @@ export type JwtPayload = {
     name: string;
     email: string;
     iat: number;
-    exp: number;
+    exp: number | string;
     aud: string;
     iss: string;
 };

@@ -14,5 +14,5 @@ export class CreateContactDto {
     @IsString()
     @IsNotEmpty()
     @MinLength(10)
-    fone: string;
+    phone: string;
 }
