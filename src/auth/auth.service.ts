@@ -33,7 +33,6 @@ export class AuthService {
     const passwordIsValid = await this.hashingService.compare(
       loginDto.password, user.passwordHash
     );
-
     if (!passwordIsValid) {
       throw new UnauthorizedException('Senha inválida');
     };
@@ -52,6 +51,7 @@ export class AuthService {
     );
 
     const accessToken = await Promise.resolve(accessTokenPromise);
+    console.log('acc');
 
     return {
       id: user.id,

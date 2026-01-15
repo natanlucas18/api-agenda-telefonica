@@ -4,6 +4,7 @@ import { ConfigModule, ConfigType } from '@nestjs/config';
 import globalConfig from './global.config';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { ContactsModule } from './contacts/contacts.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     UsersModule,
     AuthModule,
+    ContactsModule,
   ],
   controllers: [],
   providers: [],

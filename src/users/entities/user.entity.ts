@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Contact } from "src/contacts/entities/contact.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -13,4 +14,7 @@ export class User {
 
     @Column()
     passwordHash: string;
+
+    @OneToMany(() => Contact, (contact) => contact.userId)
+    contacts: Contact[];
 }
