@@ -22,8 +22,8 @@ export class AuthService {
   ) { }
 
   async login(loginDto: LoginDto): Promise<GenerateTokens> {
-    const user = await this.userRepo.findOneBy({
-      email: loginDto.email,
+    const user = await this.userRepo.findOne({
+      where: {email: loginDto.email}
     })
 
     if (!user) {
@@ -42,16 +42,15 @@ export class AuthService {
 
   private async generateTokens(user: User) {
     const accessTokenPromise = this.signJwtAsync<Partial<User>>(
-      user.id,
-      this.jwtConfiguration.expiresIn,
+      String(user.id),
+      Number(this.jwtConfiguration.expiresIn),
       {
         name: user.name,
         email: user.email,
       },
     );
 
-    const accessToken = await Promise.resolve(accessTokenPromise);
-    console.log('acc');
+    const accessToken = await accessTokenPromise;
 
     return {
       id: user.id,

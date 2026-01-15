@@ -33,15 +33,15 @@ export class AuthTokenGuard implements CanActivate {
                 issuer: this.jwtConfiguration.issuer,
             });
             const user = await this.userRepo.findOneBy({
-                id: String(payload.sub)
+                id: payload.sub
             });
             if (!user) {
                 throw new UnauthorizedException('Usuário não autorizado!');
             }
             request.user = user;
             request.tokenPayload = payload;
-        } catch {
-            throw new UnauthorizedException('Validação do token falhou');
+        } catch(error) {
+            throw new UnauthorizedException(error.message);
         }
         return true;
     }

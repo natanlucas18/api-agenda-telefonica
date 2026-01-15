@@ -13,7 +13,7 @@ export class Contact {
     email: string;
 
     @Column()
-    fone:string;
+    phone:string;
 
     @CreateDateColumn()
     createdAt?: Date;

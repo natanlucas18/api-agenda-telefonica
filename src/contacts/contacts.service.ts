@@ -26,7 +26,7 @@ export class ContactsService {
       const contact = this.contactRepo.create({
         name: createContactDto.name,
         email: createContactDto.email,
-        fone: createContactDto.fone
+        phone: createContactDto.phone
       });
       return await this.contactRepo.save(contact);
     } catch (error) {
