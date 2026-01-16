@@ -34,38 +34,49 @@ export class ContactsService {
     }
   }
 
-  async findAll(query: PaginationQueryDto): Promise<PaginatedResponseDto<Contact>> {
-    const page = Number(query.page) || 1;
-    const limit = Number(query.limit) || 10;
-    const skip = (page - 1) * limit;
+async findAll(
+  query: PaginationQueryDto,
+): Promise<PaginatedResponseDto<Contact>> {
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
 
-    const qb = this.contactRepo.createQueryBuilder('contact');
+  const qb = this.contactRepo.createQueryBuilder('contact');
 
-    if (query.search) {
-      qb.andWhere('(contact.name ILIKE :search)', {
-        search: `%${query.search}%`
-      });
-    };
-
-    qb.orderBy(`contact.${query.sortBy}`, query.sortOrder);
-    qb.skip(skip).take(limit);
-
-    const [data, total] = await qb.getManyAndCount();
-
-    const totalPages = Math.ceil(total / limit);
-
-    return {
-      data,
-      meta: {
-        page,
-        limit,
-        totalItems: total,
-        totalPages,
-        hasPreviusPage: page > 1,
-        hasNextPage: page < totalPages,
-      }
-    }
+  if (query.search) {
+    qb.andWhere('contact.name ILIKE :search', {
+      search: `%${query.search}%`,
+    });
   }
+
+  const allowedSortBy = ['name', 'createdAt', 'updatedAt'];
+
+  const sortBy = query.sortBy && allowedSortBy.includes(query.sortBy)
+    ? query.sortBy
+    : 'createdAt';
+
+  const sortOrder =
+    query.sortOrder?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
+
+  qb.orderBy(`contact.${sortBy}`, sortOrder);
+  qb.skip(skip).take(limit);
+
+  const [data, total] = await qb.getManyAndCount();
+
+  const totalPages = Math.ceil(total / limit);
+
+  return {
+    data,
+    meta: {
+      page,
+      limit,
+      totalItems: total,
+      totalPages,
+      hasPreviusPage: page > 1,
+      hasNextPage: page < totalPages,
+    },
+  };
+}
 
   async findOne(id: string): Promise<Contact> {
     const contact = await this.contactRepo.findOneBy({
