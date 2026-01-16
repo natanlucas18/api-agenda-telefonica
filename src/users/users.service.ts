@@ -25,12 +25,18 @@ export class UsersService {
         }
 
         const passwordHash = await this.hashingService.hash(createUserDto.password);
-        const user = this.userRepo.create({
+        const dataUser = this.userRepo.create({
             name: createUserDto.name,
             email: createUserDto.email,
             passwordHash,
         });
-        return await this.userRepo.save(user);
+        const user = await this.userRepo.save(dataUser);
+
+        return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+        }
     }
 
     async findOne(id: string): Promise<ResponseUserDto> {
@@ -42,7 +48,11 @@ export class UsersService {
             throw new NotFoundException('Usuário não encontrado');
         }
 
-        return user;
+        return {
+            id: user.id,
+            name: user.name,
+            email: user.email,     
+        }
     }
 
     async update(id: string, updateUserDto: UpdateUserDto, tokenPayloadDto:TokenPayloadDto):Promise<ResponseUserDto> {
@@ -69,7 +79,13 @@ export class UsersService {
             throw new ForbiddenException('Você não pode atualizar esse usuário');
         }
 
-        return await this.userRepo.save(user);
+        const updateUser = await this.userRepo.save(user);
+
+        return {
+            id: updateUser.id,
+            name: updateUser.name,
+            email: updateUser.email,
+        }
     }
 
     async remove(id: string, tokenPayloadDto:TokenPayloadDto):Promise<ResponseUserDto> {
@@ -85,6 +101,11 @@ export class UsersService {
             throw new ForbiddenException('Você não pode remover esse usuário');
         };
 
-        return await this.userRepo.remove(user);
+        const removedUser = await this.userRepo.remove(user);
+        return {
+            id: removedUser.id,
+            name: removedUser.name,
+            email: removedUser.email,
+        }
     }
 }
