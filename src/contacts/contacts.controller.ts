@@ -5,6 +5,8 @@ import { UpdateContactDto } from './dto/update-contact.dto';
 import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
 import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { tokenPayloadParams } from 'src/auth/params/token-payload.params';
+import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
 @UseGuards(AuthTokenGuard)
 @ApiBearerAuth()
@@ -18,8 +20,11 @@ export class ContactsController {
   @ApiResponse({ status: 409, description: 'dados inválidos' })
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  create(@Body() createContactDto: CreateContactDto) {
-    return this.contactsService.create(createContactDto);
+  create(
+    @Body() createContactDto: CreateContactDto,
+    @tokenPayloadParams() tokenPayloadDto: TokenPayloadDto,
+  ) {
+    return this.contactsService.create(createContactDto,tokenPayloadDto);
   }
 
   @ApiOperation({ summary: 'Retorna todos os contatos' })
@@ -27,9 +32,11 @@ export class ContactsController {
   @HttpCode(HttpStatus.OK)
   @Get()
   findAll(
-    @Query() query: PaginationQueryDto
+    @Query() query: PaginationQueryDto,
+    @tokenPayloadParams() tokenPayloadDto: TokenPayloadDto
   ) {
-    return this.contactsService.findAll(query);
+    const userId = tokenPayloadDto.sub;
+    return this.contactsService.findAll(query, userId);
   }
 
   @ApiOperation({ summary: 'Retorna um contato específico pelo ID' })
@@ -38,8 +45,12 @@ export class ContactsController {
   @ApiResponse({ status: 404, description: 'contato não encontrado' })
   @HttpCode(HttpStatus.OK)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.contactsService.findOne(id);
+  findOne(
+    @Param('id') id: string,
+    @tokenPayloadParams() tokenPayloadDto:TokenPayloadDto,
+  ) {
+    const userId = tokenPayloadDto.sub;
+    return this.contactsService.findOne(id, userId);
   }
 
   @ApiOperation({ summary: 'Atualiza um contato existente' })
@@ -49,8 +60,12 @@ export class ContactsController {
   @ApiResponse({ status: 409, description: 'dados inválidos' })
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateContactDto: UpdateContactDto) {
-    return this.contactsService.update(id, updateContactDto);
+  update(
+    @Param('id') id: string,
+    @tokenPayloadParams() tokenPayloadDto:TokenPayloadDto,
+    @Body() updateContactDto: UpdateContactDto) {
+    const userId = tokenPayloadDto.sub;
+    return this.contactsService.update(id, userId, updateContactDto);
   }
 
   @ApiOperation({ summary: 'Remove um contato existente' })
@@ -59,7 +74,11 @@ export class ContactsController {
   @ApiResponse({ status: 404, description: 'contato não encontrado' })
   @HttpCode(HttpStatus.OK)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.contactsService.remove(id);
+  remove(
+    @Param('id') id: string,
+    @tokenPayloadParams() tokenPayloadDto:TokenPayloadDto,
+  ) {
+    const userId = tokenPayloadDto.sub;
+    return this.contactsService.remove(id, userId);
   }
 }

@@ -6,42 +6,48 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { PaginatedResponseDto } from 'src/common/dtos/paginated-response.dto';
+import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
 @Injectable()
 export class ContactsService {
   constructor(
     @InjectRepository(Contact)
     private readonly contactRepo: Repository<Contact>,
-  ) { }
-  async create(createContactDto: CreateContactDto): Promise<Contact> {
-    try {
-      const isExist = await this.contactRepo.findOneBy({
-        email: createContactDto.email
+  ) {}
+  async create(
+    createContactDto: CreateContactDto,
+    tokenPayloadDto: TokenPayloadDto
+  ): Promise<Contact> {
+      const isExist = await this.contactRepo.findOne({
+        where: {
+        email: createContactDto.email,
+        user: {id: tokenPayloadDto.sub}
+        }
       });
 
       if (isExist) {
         throw new ConflictException('Já existe um contato cadastrado com esse e-mail');
       }
-
       const contact = this.contactRepo.create({
         name: createContactDto.name,
         email: createContactDto.email,
-        phone: createContactDto.phone
+        phone: createContactDto.phone,
+        user: {id: tokenPayloadDto.sub}
       });
       return await this.contactRepo.save(contact);
-    } catch (error) {
-      throw error;
-    }
   }
 
 async findAll(
   query: PaginationQueryDto,
+  userId: string,
 ): Promise<PaginatedResponseDto<Contact>> {
   const page = Number(query.page) || 1;
   const limit = Number(query.limit) || 10;
   const skip = (page - 1) * limit;
 
-  const qb = this.contactRepo.createQueryBuilder('contact');
+  const qb = this.contactRepo.createQueryBuilder('contact')
+    .innerJoin('contact.user', 'user')
+    .where('user.id = :userId', {userId})
 
   if (query.search) {
     qb.andWhere('contact.name ILIKE :search', {
@@ -78,10 +84,13 @@ async findAll(
   };
 }
 
-  async findOne(id: string): Promise<Contact> {
-    const contact = await this.contactRepo.findOneBy({
-      id,
-    });
+  async findOne(id: string, userId: string): Promise<Contact> {
+    const contact = await this.contactRepo.findOne({
+      where: {
+        id,
+        user: {id: userId},
+      }
+    })
 
     if (!contact) {
       throw new NotFoundException('Contato não encontrado');
@@ -90,38 +99,30 @@ async findAll(
     return contact;
   }
 
-  async update(id: string, updateContactDto: UpdateContactDto): Promise<Contact> {
-    try {
-      const contact = await this.contactRepo.preload({
-        id,
-        ...updateContactDto
-      });
-
+  async update(id: string, userId: string, updateContactDto: UpdateContactDto): Promise<Contact> {
+      const contact = await this.contactRepo.findOne({
+        where: {
+          id,
+          user: { id: userId }
+        }});
       if (!contact) {
         throw new NotFoundException('Contato não encontrado');
-      };
-
-      return await this.contactRepo.save(contact);
-    } catch (error) {
-      if (error.code === '23505') {
-        throw new ConflictException('já existe um contato com cadastrado com esse e-mail');
       }
-      throw error;
-    }
+      Object.assign(contact, updateContactDto);
+      return await this.contactRepo.save(contact);
   }
 
-  async remove(id: string): Promise<Contact> {
-    try {
-      const contact = await this.contactRepo.findOneBy({
-        id,
+  async remove(id: string, userId: string): Promise<Contact> {
+      const contact = await this.contactRepo.findOne({
+        where: {
+          id,
+          user: {id: userId}
+        }
       });
 
       if (!contact) {
         throw new NotFoundException('Contato não encontrado');
       }
       return await this.contactRepo.remove(contact);
-    } catch(error) {
-      throw error;
-    }
   }
 }
