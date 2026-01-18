@@ -5,9 +5,15 @@ import globalConfig from './global.config';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ContactsModule } from './contacts/contacts.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot([{
+      ttl: 10000,
+      limit: 10,
+      blockDuration: 5000,
+    }]),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [globalConfig]

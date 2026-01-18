@@ -7,6 +7,11 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    methods: 'GET,POST,PUT,PATCH,DELETE',
+    credentials: true,
+  });
   const config = new DocumentBuilder()
   .setTitle('Api agenda telefônica')
   .setDescription('Gerencie seus contatos de forma simples e prática')
