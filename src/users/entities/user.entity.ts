@@ -15,6 +15,6 @@ export class User {
     @Column()
     passwordHash: string;
 
-    @OneToMany(() => Contact, (contact) => contact.userId)
+    @OneToMany(() => Contact, (contact) => contact.user)
     contacts: Contact[];
 }
