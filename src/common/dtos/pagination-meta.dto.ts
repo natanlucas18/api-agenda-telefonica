@@ -3,6 +3,6 @@ export class PaginationMetaDto {
     limit: number;
     totalItems: number;
     totalPages: number;
+    hasPreviousPage: boolean;
     hasNextPage: boolean;
-    hasPreviusPage: boolean;
 }

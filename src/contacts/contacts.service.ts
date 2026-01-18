@@ -78,7 +78,7 @@ async findAll(
       limit,
       totalItems: total,
       totalPages,
-      hasPreviusPage: page > 1,
+      hasPreviousPage: page > 1,
       hasNextPage: page < totalPages,
     },
   };
