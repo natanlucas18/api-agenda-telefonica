@@ -9,7 +9,7 @@ export class Contact {
     @Column()
     name: string;
 
-    @Column({unique: true})
+    @Column()
     email: string;
 
     @Column()
@@ -19,5 +19,5 @@ export class Contact {
     createdAt?: Date;
 
     @ManyToOne(() => User, (user) => user.contacts, {onDelete: 'CASCADE'})
-    userId: User;
+    user: User;
 }
