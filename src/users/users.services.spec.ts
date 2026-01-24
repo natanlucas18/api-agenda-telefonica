@@ -104,16 +104,15 @@ describe('UsersService', () => {
 
   describe('findOne', () => {
     it('should return a user', async () => {
-        const expectedResponse:ResponseUserDto = {
-          id: userMock.id,
-          name: userMock.name,
-          email: userMock.email,
-        };
+      const expectedResponse: ResponseUserDto = {
+        id: userMock.id,
+        name: userMock.name,
+        email: userMock.email,
+      };
 
       userRepo.findOne.mockResolvedValue(userMock);
 
       const result = await service.findOne('uuid');
-
 
       expect(result).toEqual(expectedResponse);
     });
@@ -121,7 +120,9 @@ describe('UsersService', () => {
     it('should throw NotFoundException if the user not exist', async () => {
       userRepo.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne('uuid-1')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('uuid-1')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -164,11 +165,7 @@ describe('UsersService', () => {
         email: userMock.email,
       } as User);
 
-      await service.update(
-        'uuid',
-        { password: 'novaSenha' },
-        tokenPayload,
-      );
+      await service.update('uuid', { password: 'novaSenha' }, tokenPayload);
 
       expect(hashingService.hash).toHaveBeenCalledWith('novaSenha');
     });
@@ -214,9 +211,9 @@ describe('UsersService', () => {
     it('should throw NotFoundException if the user not exist', async () => {
       userRepo.findOne.mockResolvedValue(null);
 
-      await expect(
-        service.remove('uuid-5', tokenPayload),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.remove('uuid-5', tokenPayload)).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should throw ForbiddenException if you try to remove another user', async () => {
@@ -224,9 +221,9 @@ describe('UsersService', () => {
         id: 'uuid-5',
       } as User);
 
-      await expect(
-        service.remove('uuid-5', tokenPayload),
-      ).rejects.toThrow(ForbiddenException);
+      await expect(service.remove('uuid-5', tokenPayload)).rejects.toThrow(
+        ForbiddenException,
+      );
     });
   });
 });

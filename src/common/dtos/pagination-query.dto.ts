@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsOptional,
-  IsInt,
-  Min,
-  IsString,
-  IsIn,
-} from 'class-validator';
+import { IsOptional, IsInt, Min, IsString, IsIn } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class PaginationQueryDto {

@@ -8,12 +8,12 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @ApiOperation({summary: 'Efetua o login do usuário'})
-  @ApiResponse({status: 200, description: 'Login efetuado com sucesso'})
-  @ApiResponse({status: 401, description: 'Credenciais inválidas'})
+  @ApiOperation({ summary: 'Efetua o login do usuário' })
+  @ApiResponse({ status: 200, description: 'Login efetuado com sucesso' })
+  @ApiResponse({ status: 401, description: 'Credenciais inválidas' })
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  login(@Body() loginDto:LoginDto) {
+  login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
   }
 }

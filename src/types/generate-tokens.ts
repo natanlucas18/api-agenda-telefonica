@@ -4,4 +4,4 @@ export type GenerateTokens = {
   email: string;
   accessToken: string;
   expiresIn: string;
-}
+};

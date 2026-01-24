@@ -9,14 +9,16 @@ import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
-    ThrottlerModule.forRoot([{
-      ttl: 10000,
-      limit: 10,
-      blockDuration: 5000,
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 10000,
+        limit: 10,
+        blockDuration: 5000,
+      },
+    ]),
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [globalConfig]
+      load: [globalConfig],
     }),
     TypeOrmModule.forRootAsync({
       inject: [globalConfig.KEY],
@@ -30,8 +32,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
           password: globalConfigurations.database.password,
           autoLoadEntities: globalConfigurations.database.autoLoadEntities,
           synchronize: globalConfigurations.database.synchronize,
-        }
-      }
+        };
+      },
     }),
     UsersModule,
     AuthModule,
