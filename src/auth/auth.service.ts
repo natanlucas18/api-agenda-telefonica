@@ -41,6 +41,8 @@ export class AuthService {
   };
 
   private async generateTokens(user: User) {
+    const expiresIn = Number(this.jwtConfiguration.expiresIn);
+
     const accessTokenPromise = this.signJwtAsync<Partial<User>>(
       String(user.id),
       Number(this.jwtConfiguration.expiresIn),
@@ -56,7 +58,8 @@ export class AuthService {
       id: user.id,
       name: user.name,
       email: user.email,
-      accessToken
+      accessToken,
+      expiresIn
     };
   };
 
