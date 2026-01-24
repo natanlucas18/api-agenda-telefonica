@@ -6,7 +6,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { PaginatedResponseDto } from 'src/common/dtos/paginated-response.dto';
-import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
 @Injectable()
 export class ContactsService {
@@ -16,12 +15,12 @@ export class ContactsService {
   ) {}
   async create(
     createContactDto: CreateContactDto,
-    tokenPayloadDto: TokenPayloadDto
+    userId: string
   ): Promise<Contact> {
       const isExist = await this.contactRepo.findOne({
         where: {
         email: createContactDto.email,
-        user: {id: tokenPayloadDto.sub}
+        user: {id: userId}
         }
       });
 
@@ -32,7 +31,7 @@ export class ContactsService {
         name: createContactDto.name,
         email: createContactDto.email,
         phone: createContactDto.phone,
-        user: {id: tokenPayloadDto.sub}
+        user: {id: userId}
       });
       return await this.contactRepo.save(contact);
   }

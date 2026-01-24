@@ -17,8 +17,8 @@ export class UsersService {
     ) {}
 
     async create(createUserDto: CreateUserDto):Promise<ResponseUserDto> {
-        const isExists = await this.userRepo.findOneBy({
-            email: createUserDto.email,
+        const isExists = await this.userRepo.findOne({
+            where: {email: createUserDto.email}
         });
         if(isExists) {
             throw new ConflictException('Esse e-mail já está cadastrado.');
@@ -40,8 +40,8 @@ export class UsersService {
     }
 
     async findOne(id: string): Promise<ResponseUserDto> {
-        const user = await this.userRepo.findOneBy({
-            id,
+        const user = await this.userRepo.findOne({
+            where: { id }
         });
 
         if (!user) {
@@ -89,8 +89,8 @@ export class UsersService {
     }
 
     async remove(id: string, tokenPayloadDto:TokenPayloadDto):Promise<ResponseUserDto> {
-        const user = await this.userRepo.findOneBy({
-            id,
+        const user = await this.userRepo.findOne({
+            where: { id }
         });
         
         if (!user) {

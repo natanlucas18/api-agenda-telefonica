@@ -24,7 +24,8 @@ export class ContactsController {
     @Body() createContactDto: CreateContactDto,
     @tokenPayloadParams() tokenPayloadDto: TokenPayloadDto,
   ) {
-    return this.contactsService.create(createContactDto,tokenPayloadDto);
+    const userId = tokenPayloadDto.sub;
+    return this.contactsService.create(createContactDto,userId);
   }
 
   @ApiOperation({ summary: 'Retorna todos os contatos' })
