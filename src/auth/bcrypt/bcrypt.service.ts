@@ -1,12 +1,12 @@
 import * as bcrypt from 'bcrypt';
 import { HashingService } from '../hashing/hashing.service';
 export class BcryptService extends HashingService {
-    async hash(password: string): Promise<string> {
-        const salt = await bcrypt.genSalt();
-        return bcrypt.hash(password, salt);
-    };
-    
-    async compare(password: string, passwordHash: string): Promise<boolean> {
-        return await bcrypt.compare(password, passwordHash);
-    }
+  async hash(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt();
+    return bcrypt.hash(password, salt);
+  }
+
+  async compare(password: string, passwordHash: string): Promise<boolean> {
+    return await bcrypt.compare(password, passwordHash);
+  }
 }

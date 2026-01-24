@@ -8,8 +8,7 @@ import jwtConfig from './config/jwt.config';
 import type { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { GenerateTokens } from 'src/types/generate-tokens';
-import {StringValue} from 'ms'
-
+import { StringValue } from 'ms';
 
 @Injectable()
 export class AuthService {
@@ -20,26 +19,27 @@ export class AuthService {
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   async login(loginDto: LoginDto): Promise<GenerateTokens> {
     const user = await this.userRepo.findOne({
-      where: {email: loginDto.email}
-    })
+      where: { email: loginDto.email },
+    });
 
     if (!user) {
       throw new UnauthorizedException('Usuário não autorizado');
     }
 
     const passwordIsValid = await this.hashingService.compare(
-      loginDto.password, user.passwordHash
+      loginDto.password,
+      user.passwordHash,
     );
     if (!passwordIsValid) {
       throw new UnauthorizedException('Senha inválida');
-    };
+    }
 
     return this.generateTokens(user);
-  };
+  }
 
   private async generateTokens(user: User) {
     const expiresIn = this.jwtConfiguration.expiresIn;
@@ -60,9 +60,9 @@ export class AuthService {
       name: user.name,
       email: user.email,
       accessToken,
-      expiresIn
+      expiresIn,
     };
-  };
+  }
 
   private signJwtAsync<T>(sub: string, expiresIn: StringValue, payload?: T) {
     return this.jwtService.signAsync(
@@ -75,6 +75,7 @@ export class AuthService {
         issuer: this.jwtConfiguration.issuer,
         secret: this.jwtConfiguration.secret,
         expiresIn,
-      });
-  };
+      },
+    );
+  }
 }

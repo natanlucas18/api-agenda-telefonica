@@ -13,21 +13,23 @@ async function bootstrap() {
     credentials: true,
   });
   const config = new DocumentBuilder()
-  .setTitle('Api agenda telefônica')
-  .setDescription('Gerencie seus contatos de forma simples e prática')
-  .addBearerAuth()
-  .setVersion('1.0')
-  .build()
+    .setTitle('Api MailConecta')
+    .setDescription(
+      'Gerencie seus contatos e envie e-mails de forma simples e prática',
+    )
+    .addBearerAuth()
+    .setVersion('1.0')
+    .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
-    })
-  )
-  app.useGlobalFilters(new HttpExceptionFilter())
-  app.useGlobalInterceptors(new ResponseInterceptor())
+    }),
+  );
+  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalInterceptors(new ResponseInterceptor());
   await app.listen(process.env.PORT ?? 3001);
 }
-bootstrap();
+void bootstrap();

@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UnauthorizedException } from '@nestjs/common';
 import jwtConfig from './config/jwt.config';
 import { ConfigType } from '@nestjs/config';
-import {StringValue} from 'ms'
+import { StringValue } from 'ms';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -85,7 +85,7 @@ describe('AuthService', () => {
         name: userMock.name,
         email: userMock.email,
         accessToken: 'jwt-token',
-        expiresIn: '1h'
+        expiresIn: '1h',
       });
 
       expect(hashingService.compare).toHaveBeenCalledWith(
@@ -103,7 +103,7 @@ describe('AuthService', () => {
           audience: jwtConfigMock.audience,
           issuer: jwtConfigMock.issuer,
           secret: jwtConfigMock.secret,
-          expiresIn:jwtConfigMock.expiresIn,
+          expiresIn: jwtConfigMock.expiresIn,
         },
       );
     });

@@ -25,21 +25,24 @@ describe('ContactsService', () => {
     phone: '8799456022',
     createdAt: new Date(),
     user: user,
-  }
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ContactsService, {
-        provide: getRepositoryToken(Contact),
-        useValue: {
-          create: jest.fn(),
-          findAll: jest.fn(),
-          findOne: jest.fn(),
-          save: jest.fn(),
-          remove: jest.fn(),
-          createQueryBuilder: jest.fn(),
+      providers: [
+        ContactsService,
+        {
+          provide: getRepositoryToken(Contact),
+          useValue: {
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findOne: jest.fn(),
+            save: jest.fn(),
+            remove: jest.fn(),
+            createQueryBuilder: jest.fn(),
+          },
         },
-      }],
+      ],
     }).compile();
 
     contactService = module.get<ContactsService>(ContactsService);
@@ -48,7 +51,7 @@ describe('ContactsService', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
-  })
+  });
 
   it('should be defined', () => {
     expect(contactService).toBeDefined();
@@ -60,11 +63,14 @@ describe('ContactsService', () => {
       contactRepo.create.mockReturnValue(mockContact);
       contactRepo.save.mockResolvedValue(mockContact);
 
-      const result = await contactService.create({
-        name: 'Renan',
-        email: 'renan@email.com',
-        phone: '8799456022',
-      }, 'uuid');
+      const result = await contactService.create(
+        {
+          name: 'Renan',
+          email: 'renan@email.com',
+          phone: '8799456022',
+        },
+        'uuid',
+      );
 
       expect(contactRepo.create).toHaveBeenCalled();
       expect(contactRepo.save).toHaveBeenCalledWith(mockContact);
@@ -74,11 +80,16 @@ describe('ContactsService', () => {
     it('should throw a new ConflictException if the contact already exists', async () => {
       contactRepo.findOne.mockResolvedValue(mockContact);
 
-      expect(contactService.create({
-        name: 'Renan',
-        email: 'renan@email.com',
-        phone: '87 99456022'
-      }, 'uuid')).rejects.toThrow(ConflictException);
+      expect(
+        contactService.create(
+          {
+            name: 'Renan',
+            email: 'renan@email.com',
+            phone: '87 99456022',
+          },
+          'uuid',
+        ),
+      ).rejects.toThrow(ConflictException);
     });
   });
 
@@ -91,21 +102,24 @@ describe('ContactsService', () => {
         orderBy: jest.fn().mockReturnThis(),
         skip: jest.fn().mockReturnThis(),
         take: jest.fn().mockReturnThis(),
-        getManyAndCount: jest.fn().mockResolvedValue([[mockContact], 1])
+        getManyAndCount: jest.fn().mockResolvedValue([[mockContact], 1]),
       };
       contactRepo.createQueryBuilder.mockReturnValue(qb);
 
-      const result = await contactService.findAll({
-        page: 1,
-        limit: 10,
-        sortBy: 'name',
-        sortOrder: 'ASC',
-      }, 'uuid');
+      const result = await contactService.findAll(
+        {
+          page: 1,
+          limit: 10,
+          sortBy: 'name',
+          sortOrder: 'ASC',
+        },
+        'uuid',
+      );
 
       expect(result.data).toHaveLength(1);
       expect(result.meta.totalItems).toBe(1);
       expect(result.meta.totalPages).toBe(1);
-    })
+    });
   });
 
   describe('findOne', () => {
@@ -121,7 +135,7 @@ describe('ContactsService', () => {
       contactRepo.findOne.mockResolvedValue(null);
 
       expect(contactService.findOne('uuid-2', 'uuid')).rejects.toThrow(
-        NotFoundException
+        NotFoundException,
       );
     });
   });
@@ -135,7 +149,11 @@ describe('ContactsService', () => {
         name: 'Lucas',
       };
 
-      const result = await contactService.update('uuid-2', 'uuid', updateContactDto);
+      const result = await contactService.update(
+        'uuid-2',
+        'uuid',
+        updateContactDto,
+      );
 
       expect(contactRepo.save).toHaveBeenCalledWith({
         ...mockContact,
@@ -143,15 +161,16 @@ describe('ContactsService', () => {
       });
 
       expect(result.name).toEqual(updateContactDto.name);
-
     });
 
     it('should throw a NotFoundException if not exist', async () => {
       contactRepo.findOne.mockResolvedValue(null);
 
-      expect(contactService.update('uuid-2', 'uuid', {
-        name: 'Lucas',
-      })).rejects.toThrow(NotFoundException);
+      expect(
+        contactService.update('uuid-2', 'uuid', {
+          name: 'Lucas',
+        }),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -162,7 +181,7 @@ describe('ContactsService', () => {
 
       const result = await contactService.remove('uuid-2', 'uuid');
 
-      expect(contactRepo.remove).toHaveBeenCalledWith(mockContact)
+      expect(contactRepo.remove).toHaveBeenCalledWith(mockContact);
       expect(result).toEqual(mockContact);
     });
 
@@ -170,7 +189,7 @@ describe('ContactsService', () => {
       contactRepo.findOne.mockResolvedValue(null);
 
       expect(contactService.remove('uuid-2', 'uuid')).rejects.toThrow(
-        NotFoundException
+        NotFoundException,
       );
     });
   });

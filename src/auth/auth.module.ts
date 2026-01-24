@@ -14,14 +14,16 @@ import { BcryptService } from './bcrypt/bcrypt.service';
   imports: [
     TypeOrmModule.forFeature([User]),
     ConfigModule.forFeature(jwtConfig),
-    JwtModule.registerAsync(jwtConfig.asProvider()),  
-],
+    JwtModule.registerAsync(jwtConfig.asProvider()),
+  ],
   controllers: [AuthController],
   providers: [
     {
-      provide:HashingService,
+      provide: HashingService,
       useClass: BcryptService,
-    }, AuthService],
+    },
+    AuthService,
+  ],
   exports: [HashingService, ConfigModule, JwtModule],
 })
 export class AuthModule {}
