@@ -8,6 +8,7 @@ import jwtConfig from './config/jwt.config';
 import type { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { GenerateTokens } from 'src/types/generate-tokens';
+import {StringValue} from 'ms'
 
 
 @Injectable()
@@ -41,11 +42,11 @@ export class AuthService {
   };
 
   private async generateTokens(user: User) {
-    const expiresIn = Number(this.jwtConfiguration.expiresIn);
+    const expiresIn = this.jwtConfiguration.expiresIn;
 
     const accessTokenPromise = this.signJwtAsync<Partial<User>>(
       String(user.id),
-      Number(this.jwtConfiguration.expiresIn),
+      this.jwtConfiguration.expiresIn as StringValue,
       {
         name: user.name,
         email: user.email,
@@ -63,7 +64,7 @@ export class AuthService {
     };
   };
 
-  private signJwtAsync<T>(sub: string, expiresIn: number, payload?: T) {
+  private signJwtAsync<T>(sub: string, expiresIn: StringValue, payload?: T) {
     return this.jwtService.signAsync(
       {
         sub,
