@@ -9,11 +9,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 @Injectable()
 export class EmailService {
   private transporter;
-  private readonly logger = new Logger(EmailService.name)
+  private readonly logger = new Logger(EmailService.name);
   @InjectRepository(Contact)
-  private readonly contactsRepo: Repository<Contact>
+  private readonly contactsRepo: Repository<Contact>;
 
-  constructor( private readonly config: ConfigService) {
+  constructor(private readonly config: ConfigService) {
     this.transporter = nodemailer.createTransport({
       host: this.config.get<string>('email.host'),
       port: this.config.get<number>('email.port'),
@@ -21,7 +21,7 @@ export class EmailService {
       auth: this.config.get('email.user')
         ? {
             user: this.config.get('email.user'),
-            pass: this.config.get('email.pass')
+            pass: this.config.get('email.pass'),
           }
         : undefined,
     });
@@ -29,11 +29,11 @@ export class EmailService {
 
   async sendMail({ to, subject, html }: SendMailDto): Promise<void> {
     const contact = await this.contactsRepo.findOne({
-      where: { email: to }
-    })
+      where: { email: to },
+    });
 
-    if(!contact) {
-      throw new NotFoundException('Destinatário não encontrado.')
+    if (!contact) {
+      throw new NotFoundException('Destinatário não encontrado.');
     }
 
     await this.transporter.sendMail({

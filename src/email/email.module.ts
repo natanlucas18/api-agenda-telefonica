@@ -10,7 +10,7 @@ import { User } from 'src/users/entities/user.entity';
 @Module({
   imports: [
     ConfigModule.forFeature(emailConfig),
-    TypeOrmModule.forFeature([Contact, User])
+    TypeOrmModule.forFeature([Contact, User]),
   ],
   controllers: [EmailController],
   providers: [EmailService],
