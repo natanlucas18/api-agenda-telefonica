@@ -40,7 +40,7 @@ describe('ContactsController', () => {
   const mockTokenPayloadDto: TokenPayloadDto = {
     aud: 'localhost',
     iss: 'localhost',
-    exp: 8400,
+    exp: '1h',
     iat: 166660,
     name: 'Joao silva',
     sub: 'uuid',
