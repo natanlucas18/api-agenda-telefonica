@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     UsersModule,
     AuthModule,
     ContactsModule,
+    EmailModule,
   ],
   controllers: [],
   providers: [],
