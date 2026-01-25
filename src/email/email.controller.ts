@@ -23,7 +23,7 @@ import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
 export class EmailController {
   constructor(private readonly emailService: EmailService) {}
 
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Envia e-mails para contatos' })
   @ApiResponse({ status: 204, description: 'Envio de e-mail bem-sucedido' })
   @ApiResponse({ status: 404, description: 'Destinário não encontrado' })
