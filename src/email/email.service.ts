@@ -41,7 +41,7 @@ export class EmailService {
       from: this.config.get<string>('email.from'),
       to,
       subject,
-      html: message, 
+      html: message,
     });
 
     this.logger.log(`Email enviado para ${to}`);
