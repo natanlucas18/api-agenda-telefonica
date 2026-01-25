@@ -27,7 +27,7 @@ export class EmailService {
     });
   }
 
-  async sendMail({ to, subject, html }: SendMailDto): Promise<void> {
+  async sendMail({ to, subject, message }: SendMailDto): Promise<void> {
     const contact = await this.contactsRepo.findOne({
       where: { email: to },
     });
@@ -40,7 +40,7 @@ export class EmailService {
       from: this.config.get<string>('email.from'),
       to,
       subject,
-      html,
+      html: message, 
     });
 
     this.logger.log(`Email enviado para ${to}`);
