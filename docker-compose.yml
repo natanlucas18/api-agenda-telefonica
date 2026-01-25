@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  api:
+    container_name: mailconecta-api
+    build: .
+    ports:
+      - "3001:3001"
+    env_file:
+      - .env.docker
+    depends_on:
+      - postgres
+      - mailhog
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run start:dev
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: mailconecta-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: agenda_telefonica
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailconecta-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+volumes:
+  postgres_data:
